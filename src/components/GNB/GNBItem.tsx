@@ -4,13 +4,14 @@ import React from "react";
 
 interface GNBItemProps {
   children: React.ReactNode;
-  isActive: boolean;
+  isActive?: boolean;
+  className?: string;
 }
 
-export const GNBItem = React.memo(({ children, isActive }: GNBItemProps) => {
-  return (
-    <div className={`px-4 py-2 ${isActive ? "text-kt-red" : "text-gray-500"}`}>
-      {children}
-    </div>
-  );
-});
+export const GNBItem: React.FC<GNBItemProps> = ({
+  children,
+  isActive,
+  className,
+}) => {
+  return <div className={className}>{children}</div>;
+};

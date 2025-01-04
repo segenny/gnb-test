@@ -36,7 +36,7 @@ const NavigationSwiper = ({
       slidesPerView={"auto"}
       spaceBetween={8}
       freeMode={true}
-      className="h-10 w-full flex"
+      className="h-12 w-full flex px-2 py-1"
       preventInteractionOnTransition={true}
       touchMoveStopPropagation={true}
       touchReleaseOnEdges={true}
@@ -55,7 +55,17 @@ const NavigationSwiper = ({
             }}
             className="focus:outline-none"
           >
-            <GNBItem isActive={activeIndex === index}>{item.title}</GNBItem>
+            <GNBItem
+              isActive={activeIndex === index}
+              className={`transition-all duration-200 px-3 py-1.5 text-sm
+                ${
+                  activeIndex === index
+                    ? "bg-white text-blue-600 font-bold shadow-md border-2 border-blue-500 rounded-md transform hover:scale-102"
+                    : "bg-gray-50 text-gray-600 border border-gray-200 rounded-md hover:border-gray-300 hover:bg-gray-100"
+                }`}
+            >
+              {item.title}
+            </GNBItem>
           </button>
         </SwiperSlide>
       ))}
