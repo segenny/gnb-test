@@ -15,7 +15,7 @@ const ScheduleList = () => {
         host: "김하늘, 박성웅",
         time: "06:00-07:30",
         imageUrl:
-          "https://images.unsplash.com/photo-1528735602780-2552fd46c7af",
+          "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=10&w=500&auto=format&fit=crop",
         description: "건강한 아침 식사와 함께하는 즐거운 토크쇼",
         category: "예능",
         viewerRating: 8.9,
@@ -26,7 +26,7 @@ const ScheduleList = () => {
         host: "이수정",
         time: "07:30-09:00",
         imageUrl:
-          "https://images.unsplash.com/photo-1495020689067-958852a7765e",
+          "https://images.unsplash.com/photo-1495020689067-958852a7765e?q=10&w=500&auto=format&fit=crop",
         description: "오늘의 주요 뉴스를 심층 분석하는 시사 프로그램",
         category: "뉴스",
         viewerRating: 9.1,
@@ -36,7 +36,8 @@ const ScheduleList = () => {
         title: "웰컴 투 K-쿡",
         host: "백종원, 에릭남",
         time: "11:00-12:30",
-        imageUrl: "https://images.unsplash.com/photo-1556910103-1c02745aae4d",
+        imageUrl:
+          "https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=10&w=500&auto=format&fit=crop",
         description: "한식의 세계화! 외국인과 함께하는 쿠킹 클래스",
         category: "예능",
         viewerRating: 9.3,
@@ -47,7 +48,7 @@ const ScheduleList = () => {
         host: "손열음",
         time: "14:00-15:30",
         imageUrl:
-          "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0",
+          "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?q=10&w=500&auto=format&fit=crop",
         description: "클래식 음악과 함께하는 평화로운 오후",
         category: "교양",
         viewerRating: 8.7,
@@ -58,7 +59,7 @@ const ScheduleList = () => {
         host: "김택진, 안랩",
         time: "16:00-17:30",
         imageUrl:
-          "https://images.unsplash.com/photo-1518770660439-4636190af475",
+          "https://images.unsplash.com/photo-1518770660439-4636190af475?q=10&w=500&auto=format&fit=crop",
         description: "최신 테크 트렌드와 IT 업계 소식을 알아보는 시간",
         category: "교양",
         viewerRating: 8.8,
@@ -69,7 +70,7 @@ const ScheduleList = () => {
         host: "백진희, 유해진",
         time: "18:30-20:00",
         imageUrl:
-          "https://images.unsplash.com/photo-1493770348161-369560ae357d",
+          "https://images.unsplash.com/photo-1493770348161-369560ae357d?q=10&w=500&auto=format&fit=crop",
         description: "직장인들의 퇴근 후 일상을 따뜻하게 담아내는 리얼리티",
         category: "예능",
         viewerRating: 9.5,
@@ -80,7 +81,7 @@ const ScheduleList = () => {
         host: "유재석, 조세호",
         time: "20:00-22:00",
         imageUrl:
-          "https://images.unsplash.com/photo-1536599424071-0b215a388ba7",
+          "https://images.unsplash.com/photo-1536599424071-0b215a388ba7?q=10&w=500&auto=format&fit=crop",
         description: "대한민국 대표 예능인들과 함께하는 추리 게임쇼",
         category: "예능",
         viewerRating: 9.7,
@@ -91,7 +92,7 @@ const ScheduleList = () => {
         host: "내레이션: 박중훈",
         time: "22:00-23:00",
         imageUrl:
-          "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05",
+          "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=10&w=500&auto=format&fit=crop",
         description: "세계 각지의 특별한 이야기를 담은 다큐멘터리",
         category: "교양",
         viewerRating: 9.2,
@@ -102,7 +103,7 @@ const ScheduleList = () => {
         host: "조성진",
         time: "23:00-00:30",
         imageUrl:
-          "https://images.unsplash.com/photo-1511735111819-9a3f7709049c",
+          "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?q=10&w=500&auto=format&fit=crop",
         description: "깊어가는 밤, 감미로운 연주와 함께하는 힐링 타임",
         category: "교양",
         viewerRating: 8.6,
@@ -113,7 +114,7 @@ const ScheduleList = () => {
         host: "마동석, 정유미",
         time: "00:30-02:00",
         imageUrl:
-          "https://images.unsplash.com/photo-1514933651103-005eec06c04b",
+          "https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=10&w=500&auto=format&fit=crop",
         description: "늦은 밤 출출한 당신을 위한 맛있는 이야기",
         category: "예능",
         viewerRating: 9.4,
