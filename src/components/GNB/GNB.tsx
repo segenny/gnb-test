@@ -125,10 +125,10 @@ export const GNB = () => {
           setPreloadIndex(null);
         }}
         className="w-full flex-1 h-full"
-        speed={300} // 스와이프 속도 조정
-        touchRatio={1} // 터치 민감도 조정
-        resistance={true} // 스와이프 저항 활성화
-        resistanceRatio={0.85} // 저항 비율 조정
+        speed={200} // ✨ 스와이프 속도를 더 빠르게 조정
+        touchRatio={1.5} // ✨ 터치 민감도를 높임
+        resistance={true}
+        resistanceRatio={0.65} // ✨ 저항 비율을 낮춰서 더 쉽게 넘어가도록 함
       >
         {menuItems.map((item, index) => (
           <SwiperSlide key={item.id} className="h-full overflow-y-auto">
