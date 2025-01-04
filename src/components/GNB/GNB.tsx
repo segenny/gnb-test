@@ -129,6 +129,8 @@ const ContentSwiper = ({
                   activeIndex === index || preloadIndex === index
                     ? "block"
                     : "none",
+                opacity: activeIndex === index ? 1 : 0,
+                transition: "opacity 0.3s ease-in-out",
               }}
               onAnimationEnd={() => handleSlideMount(index)}
             >
