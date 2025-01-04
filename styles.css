@@ -1,0 +1,8 @@
+.swipe-container {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.swipe-item {
+  contain: content;
+}

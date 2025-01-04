@@ -22,6 +22,109 @@ const menuItems = [
   { id: 6, title: "미식생활", component: "ScheduleList" },
 ];
 
+const NavigationSwiper = ({
+  activeIndex,
+  setActiveIndex,
+  swiperRef,
+}: {
+  activeIndex: number;
+  setActiveIndex: (index: number) => void;
+  swiperRef: React.RefObject<any>;
+}) => {
+  return (
+    <Swiper
+      slidesPerView={"auto"}
+      spaceBetween={8}
+      freeMode={true}
+      className="h-10 w-full flex"
+      preventInteractionOnTransition={true}
+      touchMoveStopPropagation={true}
+      touchReleaseOnEdges={true}
+      cssMode={true}
+      onSlideChange={(swiper) => {
+        setActiveIndex(swiper.activeIndex);
+        swiperRef.current?.slideTo(swiper.activeIndex);
+      }}
+    >
+      {menuItems.map((item, index) => (
+        <SwiperSlide key={item.id} className="!w-auto">
+          <button
+            onClick={() => {
+              setActiveIndex(index);
+              swiperRef.current?.slideTo(index);
+            }}
+            className="focus:outline-none"
+          >
+            <GNBItem isActive={activeIndex === index}>{item.title}</GNBItem>
+          </button>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  );
+};
+const ContentSwiper = ({
+  activeIndex,
+  setActiveIndex,
+  swiperRef,
+  preloadIndex,
+  setPreloadIndex,
+  cachedComponents,
+  handleSlideChange,
+  handleSlideMount,
+}: {
+  activeIndex: number;
+  setActiveIndex: (index: number) => void;
+  swiperRef: React.RefObject<any>;
+  preloadIndex: number | null;
+  setPreloadIndex: (index: number | null) => void;
+  cachedComponents: React.ReactNode[];
+  handleSlideChange: (swiper: any) => void;
+  handleSlideMount: (index: number) => void;
+}) => {
+  return (
+    <Swiper
+      onSwiper={(swiper) => {
+        swiperRef.current = swiper;
+      }}
+      onSlideChange={handleSlideChange}
+      onTouchMove={(swiper) => {
+        const direction = swiper.touches.diff > 0 ? -1 : 1;
+        const nextIndex = activeIndex + direction;
+
+        if (nextIndex >= 0 && nextIndex < menuItems.length) {
+          setPreloadIndex(nextIndex);
+        }
+      }}
+      onTouchEnd={() => {
+        setPreloadIndex(null);
+      }}
+      className="w-full flex-1 h-full"
+      speed={200}
+      touchRatio={2}
+      resistance={true}
+      resistanceRatio={0.55}
+    >
+      {menuItems.map((item, index) => (
+        <SwiperSlide key={item.id} className="h-full overflow-y-auto">
+          <div className="mt-4 px-2">
+            <div
+              style={{
+                display:
+                  activeIndex === index || preloadIndex === index
+                    ? "block"
+                    : "none",
+              }}
+              onAnimationEnd={() => handleSlideMount(index)}
+            >
+              {cachedComponents[index]}
+            </div>
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  );
+};
+
 export const GNB = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [preloadIndex, setPreloadIndex] = useState<number | null>(null);
@@ -79,75 +182,21 @@ export const GNB = () => {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <Swiper
-        slidesPerView={"auto"}
-        spaceBetween={8}
-        freeMode={true}
-        className="h-10 w-full flex"
-        preventInteractionOnTransition={true}
-        touchMoveStopPropagation={true}
-        touchReleaseOnEdges={true}
-        cssMode={true}
-        onSlideChange={(swiper) => {
-          setActiveIndex(swiper.activeIndex);
-          swiperRef.current?.slideTo(swiper.activeIndex);
-        }}
-      >
-        {menuItems.map((item, index) => (
-          <SwiperSlide key={item.id} className="!w-auto">
-            <button
-              onClick={() => {
-                setActiveIndex(index);
-                swiperRef.current?.slideTo(index);
-              }}
-              className="focus:outline-none"
-            >
-              <GNBItem isActive={activeIndex === index}>{item.title}</GNBItem>
-            </button>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-
-      <Swiper
-        onSwiper={(swiper) => {
-          swiperRef.current = swiper;
-        }}
-        onSlideChange={handleSlideChange}
-        onTouchMove={(swiper) => {
-          const direction = swiper.touches.diff > 0 ? -1 : 1;
-          const nextIndex = activeIndex + direction;
-
-          if (nextIndex >= 0 && nextIndex < menuItems.length) {
-            setPreloadIndex(nextIndex);
-          }
-        }}
-        onTouchEnd={() => {
-          setPreloadIndex(null);
-        }}
-        className="w-full flex-1 h-full"
-        speed={200} // ✨ 스와이프 속도를 더 빠르게 조정
-        touchRatio={1.5} // ✨ 터치 민감도를 높임
-        resistance={true}
-        resistanceRatio={0.65} // ✨ 저항 비율을 낮춰서 더 쉽게 넘어가도록 함
-      >
-        {menuItems.map((item, index) => (
-          <SwiperSlide key={item.id} className="h-full overflow-y-auto">
-            <div className="mt-4 px-2">
-              <div
-                style={{
-                  display:
-                    activeIndex === index || preloadIndex === index
-                      ? "block"
-                      : "none",
-                }}
-                onAnimationEnd={() => handleSlideMount(index)}
-              >
-                {cachedComponents[index]}
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      <NavigationSwiper
+        activeIndex={activeIndex}
+        setActiveIndex={setActiveIndex}
+        swiperRef={swiperRef}
+      />
+      <ContentSwiper
+        activeIndex={activeIndex}
+        setActiveIndex={setActiveIndex}
+        swiperRef={swiperRef}
+        preloadIndex={preloadIndex}
+        setPreloadIndex={setPreloadIndex}
+        cachedComponents={cachedComponents}
+        handleSlideChange={handleSlideChange}
+        handleSlideMount={handleSlideMount}
+      />
     </div>
   );
 };
