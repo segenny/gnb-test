@@ -125,12 +125,15 @@ const ContentSwiper = ({
           <div className="mt-4 px-2">
             <div
               style={{
-                display:
-                  activeIndex === index || preloadIndex === index
-                    ? "block"
-                    : "none",
-                opacity: activeIndex === index ? 1 : 0,
-                transition: "opacity 0.3s ease-in-out",
+                display: "block",
+                opacity:
+                  activeIndex === index
+                    ? 1
+                    : Math.abs(swiperRef.current?.activeIndex - index) <= 1
+                    ? 1
+                    : 0,
+                transition: "opacity 0.5s ease-out",
+                pointerEvents: activeIndex === index ? "auto" : "none",
               }}
               onAnimationEnd={() => handleSlideMount(index)}
             >
