@@ -49,7 +49,7 @@ export const GNB = () => {
   // 캐시된 컴포넌트들을 저장할 메모이제이션 추가 ✨
   const cachedComponents = useMemo(() => {
     return menuItems.map((_, index) => renderComponent(index));
-  }, []); // 의존성 배열이 비어있어서 컴포넌트가 처음 마운트될 때만 생성됨
+  }, [menuItems]); // ✨ menuItems를 의존성 배열에 추가
 
   const handleSlideChange = (swiper: any) => {
     // 이전 슬라이드의 스크롤 위치 저장
@@ -133,11 +133,17 @@ export const GNB = () => {
         {menuItems.map((item, index) => (
           <SwiperSlide key={item.id} className="h-full overflow-y-auto">
             <div className="mt-4 px-2">
-              {(activeIndex === index || preloadIndex === index) && (
-                <div onAnimationEnd={() => handleSlideMount(index)}>
-                  {cachedComponents[index]}
-                </div>
-              )}
+              <div
+                style={{
+                  display:
+                    activeIndex === index || preloadIndex === index
+                      ? "block"
+                      : "none",
+                }}
+                onAnimationEnd={() => handleSlideMount(index)}
+              >
+                {cachedComponents[index]}
+              </div>
             </div>
           </SwiperSlide>
         ))}
