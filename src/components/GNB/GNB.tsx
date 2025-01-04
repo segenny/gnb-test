@@ -99,10 +99,16 @@ const ContentSwiper = ({
         setPreloadIndex(null);
       }}
       className="w-full flex-1 h-full"
-      speed={200}
-      touchRatio={2}
+      speed={300}
+      touchRatio={1.5}
       resistance={true}
       resistanceRatio={0.55}
+      observer={true}
+      observeParents={true}
+      watchSlidesProgress={true}
+      preventInteractionOnTransition={true}
+      longSwipesRatio={0.1}
+      threshold={5}
     >
       {menuItems.map((item, index) => (
         <SwiperSlide key={item.id} className="h-full overflow-y-auto">
