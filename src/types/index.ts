@@ -1,20 +1,16 @@
-export interface Product {
-  id: number;
-  title: string;
-  price: number;
-  originalPrice?: number;
-  imageUrl: string;
-  discount?: number;
-  description?: string;
-}
-
 export interface Program {
   id: number;
-  time: string;
   title: string;
   host: string;
-  category: string;
+  time: string;
+  imageUrl: string;
   description: string;
-  imageUrl?: string;
+  category: string;
   viewerRating: number;
+}
+
+export interface ApiResponse {
+  success: boolean;
+  data: Program[];
+  error?: string;
 } 

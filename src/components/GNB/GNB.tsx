@@ -3,13 +3,14 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { GNBItem } from "./GNBItem";
-import { useState, useRef, Suspense, lazy, useMemo } from "react";
+import { useState, useRef, Suspense, lazy, useMemo, useEffect } from "react";
+import { useGNBStore } from "../../store/gnbStore";
 
 // 컴포넌트들을 lazy로 import
 const lazyComponents = {
   ScheduleList: lazy(() => import("../Schedule/ScheduleList")),
-  ProductGrid: lazy(() => import("../Schedule/ScheduleList")),
-  OnjackContent: lazy(() => import("../Schedule/ScheduleList")),
+  ProductGrid: lazy(() => import("../Product/ProductGrid")),
+  OnjackContent: lazy(() => import("../Onjak/OnjackContent")),
   // ... 나머지 컴포넌트들도 lazy로 변경
 };
 
@@ -22,142 +23,30 @@ const menuItems = [
   { id: 6, title: "미식생활", component: "ScheduleList" },
 ];
 
-const NavigationSwiper = ({
-  activeIndex,
-  setActiveIndex,
-  swiperRef,
-}: {
-  activeIndex: number;
-  setActiveIndex: (index: number) => void;
-  swiperRef: React.RefObject<any>;
-}) => {
-  return (
-    <Swiper
-      slidesPerView={"auto"}
-      spaceBetween={8}
-      freeMode={true}
-      className="h-12 w-full flex px-2 py-1"
-      preventInteractionOnTransition={true}
-      touchMoveStopPropagation={true}
-      touchReleaseOnEdges={true}
-      cssMode={true}
-      onSlideChange={(swiper) => {
-        setActiveIndex(swiper.activeIndex);
-        swiperRef.current?.slideTo(swiper.activeIndex);
-      }}
-    >
-      {menuItems.map((item, index) => (
-        <SwiperSlide key={item.id} className="!w-auto">
-          <button
-            onClick={() => {
-              setActiveIndex(index);
-              swiperRef.current?.slideTo(index);
-            }}
-            className="focus:outline-none"
-          >
-            <GNBItem
-              isActive={activeIndex === index}
-              className={`transition-all duration-200 px-3 py-1.5 text-sm
-                ${
-                  activeIndex === index
-                    ? "bg-white text-blue-600 font-bold shadow-md border-2 border-blue-500 rounded-md transform hover:scale-102"
-                    : "bg-gray-50 text-gray-600 border border-gray-200 rounded-md hover:border-gray-300 hover:bg-gray-100"
-                }`}
-            >
-              {item.title}
-            </GNBItem>
-          </button>
-        </SwiperSlide>
-      ))}
-    </Swiper>
-  );
-};
-const ContentSwiper = ({
-  activeIndex,
-  setActiveIndex,
-  swiperRef,
-  preloadIndex,
-  setPreloadIndex,
-  cachedComponents,
-  handleSlideChange,
-  handleSlideMount,
-}: {
-  activeIndex: number;
-  setActiveIndex: (index: number) => void;
-  swiperRef: React.RefObject<any>;
-  preloadIndex: number | null;
-  setPreloadIndex: (index: number | null) => void;
-  cachedComponents: React.ReactNode[];
-  handleSlideChange: (swiper: any) => void;
-  handleSlideMount: (index: number) => void;
-}) => {
-  return (
-    <Swiper
-      onSwiper={(swiper) => {
-        swiperRef.current = swiper;
-      }}
-      onSlideChange={handleSlideChange}
-      onTouchMove={(swiper) => {
-        const direction = swiper.touches.diff > 0 ? -1 : 1;
-        const nextIndex = activeIndex + direction;
-
-        if (nextIndex >= 0 && nextIndex < menuItems.length) {
-          setPreloadIndex(nextIndex);
-        }
-      }}
-      onTouchEnd={() => {
-        setPreloadIndex(null);
-      }}
-      className="w-full flex-1 h-full"
-      speed={300}
-      touchRatio={1.5}
-      resistance={true}
-      resistanceRatio={0.55}
-      observer={true}
-      observeParents={true}
-      watchSlidesProgress={true}
-      preventInteractionOnTransition={true}
-      longSwipesRatio={0.1}
-      threshold={5}
-    >
-      {menuItems.map((item, index) => (
-        <SwiperSlide key={item.id} className="h-full overflow-y-auto">
-          <div className="mt-4 px-2">
-            <div
-              style={{
-                display: "block",
-                opacity:
-                  activeIndex === index
-                    ? 1
-                    : Math.abs(swiperRef.current?.activeIndex - index) <= 1
-                    ? 1
-                    : 0,
-                transition: "opacity 0.5s ease-out",
-                pointerEvents: activeIndex === index ? "auto" : "none",
-              }}
-              onAnimationEnd={() => handleSlideMount(index)}
-            >
-              {cachedComponents[index]}
-            </div>
-          </div>
-        </SwiperSlide>
-      ))}
-    </Swiper>
-  );
-};
-
 export const GNB = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [preloadIndex, setPreloadIndex] = useState<number | null>(null);
+  const { activeTab, scrollPositions, setActiveTab, setScrollPosition } =
+    useGNBStore();
   const swiperRef = useRef<any>(null);
-  const scrollPositions = useRef<{ [key: number]: number }>({});
+  const [preloadIndex, setPreloadIndex] = useState<number | null>(null);
+  const renderedComponents = useRef<{ [key: number]: React.ReactNode }>({});
+
+  // swiperRef가 준비되면 초기 탭으로 이동
+  useEffect(() => {
+    if (swiperRef.current) {
+      swiperRef.current.slideTo(activeTab, 0);
+    }
+  }, [activeTab]);
 
   const renderComponent = (index: number) => {
+    if (renderedComponents.current[index]) {
+      return renderedComponents.current[index];
+    }
+
     const componentName = menuItems[index].component;
     const Component =
       lazyComponents[componentName as keyof typeof lazyComponents];
 
-    return (
+    const rendered = (
       <Suspense
         fallback={
           <div className="w-full h-full flex items-center justify-center">
@@ -168,56 +57,100 @@ export const GNB = () => {
         <Component />
       </Suspense>
     );
+
+    renderedComponents.current[index] = rendered;
+    return rendered;
   };
 
-  // 캐시된 컴포넌트들을 저장할 메모이제이션 추가 ✨
   const cachedComponents = useMemo(() => {
-    return menuItems.map((_, index) => renderComponent(index));
-  }, [menuItems]); // ✨ menuItems를 의존성 배열에 추가
+    return menuItems.map((_, index) => {
+      if (index === activeTab || index === preloadIndex) {
+        return renderComponent(index);
+      }
+      return renderedComponents.current[index] || null;
+    });
+  }, [activeTab, preloadIndex]);
 
   const handleSlideChange = (swiper: any) => {
-    // 이전 슬라이드의 스크롤 위치 저장
     const prevIndex = swiper.previousIndex;
     const slideElement =
       swiper.slides[prevIndex]?.querySelector(".overflow-y-auto");
     if (slideElement) {
-      scrollPositions.current[prevIndex] = slideElement.scrollTop;
+      setScrollPosition(prevIndex, slideElement.scrollTop);
     }
-
-    setActiveIndex(swiper.activeIndex);
+    setActiveTab(swiper.activeIndex);
   };
 
-  const handleSlideMount = (index: number) => {
-    // 저장된 스크롤 위치로 복원
-    const savedPosition = scrollPositions.current[index];
-    if (savedPosition !== undefined) {
+  // 스크롤 위치 복원
+  useEffect(() => {
+    if (swiperRef.current) {
       const slideElement =
-        swiperRef.current?.slides[index]?.querySelector(".overflow-y-auto");
+        swiperRef.current.slides[activeTab]?.querySelector(".overflow-y-auto");
       if (slideElement) {
+        const savedPosition = scrollPositions[activeTab] || 0;
         setTimeout(() => {
           slideElement.scrollTop = savedPosition;
-        }, 0);
+        }, 100); // 약간의 딜레이를 줘서 컴포넌트가 완전히 마운트된 후 스크롤 위치를 복원
       }
     }
-  };
+  }, [activeTab, scrollPositions]);
 
   return (
     <div className="flex flex-col w-full h-full">
-      <NavigationSwiper
-        activeIndex={activeIndex}
-        setActiveIndex={setActiveIndex}
-        swiperRef={swiperRef}
-      />
-      <ContentSwiper
-        activeIndex={activeIndex}
-        setActiveIndex={setActiveIndex}
-        swiperRef={swiperRef}
-        preloadIndex={preloadIndex}
-        setPreloadIndex={setPreloadIndex}
-        cachedComponents={cachedComponents}
-        handleSlideChange={handleSlideChange}
-        handleSlideMount={handleSlideMount}
-      />
+      <Swiper
+        slidesPerView={"auto"}
+        spaceBetween={8}
+        freeMode={true}
+        className="h-12 w-full flex px-2 py-1"
+        preventInteractionOnTransition={true}
+        touchMoveStopPropagation={true}
+        touchReleaseOnEdges={true}
+        cssMode={true}
+        onSlideChange={handleSlideChange}
+      >
+        {menuItems.map((item, index) => (
+          <SwiperSlide key={item.id} className="!w-auto">
+            <button
+              onClick={() => {
+                setActiveTab(index);
+                swiperRef.current?.slideTo(index);
+              }}
+              className="focus:outline-none"
+            >
+              <GNBItem
+                isActive={activeTab === index}
+                className={`transition-all duration-200 px-3 py-1.5 text-sm
+                  ${
+                    activeTab === index
+                      ? "bg-white text-blue-600 font-bold shadow-md border-2 border-blue-500 rounded-md transform hover:scale-102"
+                      : "bg-gray-50 text-gray-600 border border-gray-200 rounded-md hover:border-gray-300 hover:bg-gray-100"
+                  }`}
+              >
+                {item.title}
+              </GNBItem>
+            </button>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+      <Swiper
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper;
+        }}
+        onSlideChange={handleSlideChange}
+        className="w-full flex-1 h-full"
+        speed={300}
+        touchRatio={1.5}
+        resistance={true}
+        resistanceRatio={0.55}
+        observer={true}
+        observeParents={true}
+      >
+        {menuItems.map((item, index) => (
+          <SwiperSlide key={item.id} className="h-full overflow-y-auto">
+            <div className="mt-4 px-2">{cachedComponents[index]}</div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
 };

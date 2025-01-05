@@ -1,8 +1,7 @@
-import { Product } from "@/types";
 import Image from "next/image";
 
 export const ProductGrid = () => {
-  const products: Product[] = [
+  const products = [
     {
       id: 1,
       title: "프리미엄 주방용품 세트",
