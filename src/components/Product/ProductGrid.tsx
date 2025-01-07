@@ -14,7 +14,7 @@ interface Product {
 
 export const ProductGrid = () => {
   const router = useRouter();
-  const { activeTab, scrollPositions, setScrollPosition } = useGNBStore();
+  const { activeTab } = useGNBStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -189,18 +189,7 @@ export const ProductGrid = () => {
     setLoading(false);
   }, []);
 
-  // 컴포넌트 마운트 시 스크롤 위치 복원
-  useEffect(() => {
-    if (containerRef.current) {
-      const savedPosition = scrollPositions[activeTab] || 0;
-      containerRef.current.scrollTop = savedPosition;
-    }
-  }, [activeTab, scrollPositions]);
-
   const handleProductClick = (productId: number) => {
-    if (containerRef.current) {
-      setScrollPosition(activeTab, containerRef.current.scrollTop);
-    }
     router.push(`/products/${productId}`);
   };
 
