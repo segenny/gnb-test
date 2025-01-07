@@ -1,9 +1,11 @@
 {
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_ENV=development NODE_TLS_REJECT_UNAUTHORIZED=0 next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:prod": "NODE_ENV=production NODE_TLS_REJECT_UNAUTHORIZED=0 NEXT_OUTPUT_DIR=.prod next build",
+    "start:prod": "NODE_ENV=production NODE_TLS_REJECT_UNAUTHORIZED=0 NEXT_OUTPUT_DIR=.prod next start -p 3001"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

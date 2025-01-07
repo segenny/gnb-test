@@ -79,8 +79,7 @@ const GNBHeader = ({
 };
 
 export const GNB = () => {
-  const { activeTab, scrollPositions, setActiveTab, setScrollPosition } =
-    useGNBStore();
+  const { activeTab, setActiveTab } = useGNBStore();
   const swiperRef = useRef<any>(null);
   const [preloadIndex, setPreloadIndex] = useState<number | null>(null);
   const renderedComponents = useRef<{ [key: number]: React.ReactNode }>({});
@@ -146,14 +145,7 @@ export const GNB = () => {
   }, [activeTab]);
 
   const handleSlideChange = (swiper: any) => {
-    const prevIndex = swiper.previousIndex;
-    const slideElement =
-      swiper.slides[prevIndex]?.querySelector(".overflow-y-auto");
-    if (slideElement) {
-      setScrollPosition(prevIndex, slideElement.scrollTop);
-    }
     setActiveTab(swiper.activeIndex);
-    // 슬라이드 변경 시에도 프리로딩 실행
     preloadAdjacentComponents(swiper.activeIndex);
   };
 
@@ -165,20 +157,6 @@ export const GNB = () => {
     }
   };
 
-  // 스크롤 위치 복원
-  useEffect(() => {
-    if (swiperRef.current) {
-      const slideElement =
-        swiperRef.current.slides[activeTab]?.querySelector(".overflow-y-auto");
-      if (slideElement) {
-        const savedPosition = scrollPositions[activeTab] || 0;
-        setTimeout(() => {
-          slideElement.scrollTop = savedPosition;
-        }, 100); // 약간의 딜레이를 줘서 컴포넌트가 완전히 마운트된 후 스크롤 위치를 복원
-      }
-    }
-  }, [activeTab, scrollPositions]);
-
   return (
     <div className="flex flex-col w-full h-full">
       <GNBHeader
@@ -186,7 +164,6 @@ export const GNB = () => {
         setActiveTab={(index) => {
           setActiveTab(index);
           swiperRef.current?.slideTo(index);
-          // 탭 클릭 시에도 프리로딩 실행
           preloadAdjacentComponents(index);
         }}
       />
@@ -195,7 +172,7 @@ export const GNB = () => {
           swiperRef.current = swiper;
         }}
         onSlideChange={handleSlideChange}
-        onTouchStart={handleTouchStart} // 터치 시작할 때도 프리로딩
+        onTouchStart={handleTouchStart}
         className="w-full flex-1 h-full bg-[#f8f9fa]"
         speed={300}
         touchRatio={1.5}
